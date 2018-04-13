@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- menu -->
+<div th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <div>
+        <form th:action="@{|/texte/update/${texte.id}|}" th:object="${texte}" method="post">
+
+            <h3>Modifier une texte</h3>
+
+            <div class="form-group">
+                <label for="categorie">Choisir une catégorie :</label>
+                <select class="form-control select" id="categorie" th:field="*{categorie}">
+                    <option th:each="categorie : ${categories}" th:value="${categorie.id}" th:utext="${categorie.libelle}"></option>
+                </select>
+            </div>
+
+            <div>Titre :</div>
+            <div>
+                <input type="text" id="libelle" th:field="*{libelle}" style="width:30em;" />
+            </div>
+
+            <br />
+
+            <div>Ingrédients :</div>
+            <div>
+                <textarea rows = "6" cols = "100" th:field="*{firstText}"></textarea>
+            </div>
+
+            <br />
+
+            <div>Etapes :</div>
+            <div>
+                <textarea rows = "6" cols = "100" th:field="*{secondText}"></textarea>
+            </div>
+
+            <div>
+                <input type="submit" value="Modifier" />
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

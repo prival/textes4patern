@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Menu</title>
+</head>
+<body>
+<div id="mySidenav" class="sidenav">
+<a class="menu-first" th:href="${#strings.unCapitalize(categorie.libelle)}" th:each="categorie : ${categories}" th:value="${categorie.id}"><span th:text="${categorie.libelle}"></span></a>
+<a class="menu-first" href="plats">Plats</a>
+<a class="menu-second" href="pate_gyozas">Pâte à gyozas</a>
+<a class="menu-second" href="brocoli_oignons">Brocoli aux oignons</a>
+<a class="menu-first" href="desserts">Desserts</a>
+<a class="menu-second" href="tarte_pommes">Tarte aux pommes</a>
+<a class="menu-second" href="mousse_chocolat">Mousse au chocolat</a>
+<br/>
+<a class="menu-first" href="admin">Admin</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <style>
+        textarea {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+        pre {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+    </style>
+</head>
+<body>
+
+<!-- menu -->
+<div th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <!-- texte -->
+    <div th:object="${texte}">
+
+        <h3><span th:text="*{libelle}" /></h3>
+
+        <br />
+        <div>
+            <textarea rows = "6" cols = "100" th:field="*{firstText}"></textarea>
+        </div>
+            <!--<textarea rows = "6" cols = "100"><span th:text="${texte.firstText}" style="font-family:arial;font-size:100%;" /></textarea>-->
+
+        <br />
+
+        <!--<pre><span th:text="${texte.secondText}" style="font-family:arial;font-size:100%;" /></pre>-->
+
+        <br />
+
+    </div>
+
+    <!-- partie admin -->
+    <div th:if="${session.User != null}">
+        <a th:href="@{|/texte/edit/${texte.id}|}" class="btn btn-primary">Editer</a>
+
+        <br />
+        <br />
+
+        <form th:action="@{|/texte/delete/${texte.id}|}"
+              onsubmit="return confirm('Supprimer la texte ?');"
+              method="post">
+            <input type="submit" class="btn btn-danger" value="Supprimer" />
+        </form>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

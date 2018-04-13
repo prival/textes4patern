@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- menu -->
+<div th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <form th:action="@{/categorie/update}" th:object="${categorie}" method="POST">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{ordre}" />
+        <p>
+            Editer une catégorie
+        </p>
+
+        <div>Titre :</div>
+        <input type="text" id="libelle" th:field="*{libelle}" style="width:30em;" />
+        <div>
+            <input id="buttonModifier" type="submit" value="Modifier" />
+        </div>
+
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Menu</title>
+</head>
+<body>
+<div id="mySidenav" class="sidenav" th:fragment="sidenav">
+
+    <div th:each="categorie : ${session.categoriesMenu}" th:id="|categorie${categorie.id}|" th:name="${categorie.libelle}">
+        <a class="menu-first" th:href="@{|/categorie/${categorie.id}|}" th:value="${categorie.id}">
+        <!--<a class="menu-first" th:href="|/${#strings.unCapitalize(categorie.libelle)}|" th:value="${categorie.id}">-->
+            <span th:text="${categorie.libelle}"></span>
+        </a>
+        <input type="hidden" class="ordreCategorie" th:value="${categorie.ordre}" />
+
+        <span th:each="texte : ${categorie.textes}" th:name="${texte.libelle}">
+            <a class="menu-second" th:href="@{|/texte/${texte.id}|}" th:name="idTexte">
+                    <span th:text="${texte.libelle}" style="font-family:arial;font-size:85%;"></span>
+            </a>
+            <input type="hidden" class="ordreTexte" th:id="|ordre${texte.id}|" th:value="${texte.ordre}" />
+        </span>
+    </div>
+
+    <br/>
+
+    <a id="goAdmin" class="menu-first" href="/admin">Admin</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- menu -->
+<div id="menu" th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <div id="textes">
+        <table>
+            <tbody id="sortable">
+            <tr th:each="texte, stat : ${categorie.textes}" th:id="|tr_id_${texte.libelle}|">
+                <input type="hidden" class="classId" th:value="${texte.id}" />
+                <input type="hidden" class="classLibelle" th:value="${texte.libelle}" />
+                <input type="hidden" class="classOrdre" th:value="${texte.ordre}" />
+                <td>
+                    <a name="editer" th:id="|id_${texte.libelle}|" th:href="@{|/texte/edit/${texte.id}|}">
+                    <!--<p>-->
+                        <span th:text="${texte.libelle}"></span>
+                    <!--</p>-->
+                    </a>
+                </td>
+                <!--<td>-->
+                    <!--<form th:action="@{|/categorie/delete/${categorie.id}|}" onsubmit="confirm('Supprimer la catégorie ?');" method="post">-->
+                        <!--<input type="submit" name="supprimer" class="btn btn-danger" value="Supprimer" />-->
+                    <!--</form>-->
+                <!--</td>-->
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+
+  $( function() {
+    $('#sortable').sortable({
+            start: function(event, ui) {
+                ui.item.startPos = ui.item.index();
+            },
+            update: function (event, ui) {
+
+                var startInputId = $('.classId').get(ui.item.startPos);
+                var startId = $(startInputId).attr('value');
+
+                var startInputLibelle = $('.classLibelle').get(ui.item.startPos);
+                var startLibelle = $(startInputLibelle).attr('value');
+
+                var startInputOrdre = $('.classOrdre').get(ui.item.startPos);
+                var startOrdre = $(startInputOrdre).attr('value');
+
+                var finalInputId = $('.classId').get(ui.item.index());
+                var finalId = $(finalInputId).attr('value');
+
+                var finalInputLibelle = $('.classLibelle').get(ui.item.index());
+                var finalLibelle = $(finalInputLibelle).attr('value');
+
+                var finalInputOrdre = $('.classOrdre').get(ui.item.index());
+                var finalOrdre = $(finalInputOrdre).attr('value');
+
+                $(startInputOrdre).attr('value', finalOrdre);
+                $(finalInputOrdre).attr('value', startOrdre);
+
+                var data = [
+                    {
+                        "id": startId,
+                        "libelle": startLibelle,
+                        "ordre": finalOrdre
+                    },
+                    {
+                        "id": finalId,
+                        "libelle": finalLibelle,
+                        "ordre": startOrdre
+                    }
+                ];
+
+                $.ajax({
+                    data: JSON.stringify(data),
+                    type: 'POST',
+                    contentType: "application/json",
+                    url: "/modifierOrdreTextes",
+                    success: function (data) {
+                        console.log("Succes Ajax");
+                    },
+                    error: function (data) {
+                        console.log("Erreur Ajax");
+                    }
+                });
+            }
+    });
+  });
+
+</script>
+</body>
+</html>
