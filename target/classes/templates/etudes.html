@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- menu -->
+<div th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <div th:each="etude : ${etudes}" th:name="${etude.nom}">
+        <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
+            <span th:text="${etude.nom}"></span>
+        </a>
+    </div>
+
+    <br/>
+    <br/>
+
+    <form th:action="@{/addEtude}" onsubmit="return valideEtude();" th:object="${etude}" method="post">
+
+        <div>Titre :</div>
+        <div>
+            <input type="text" id="nom" th:field="*{nom}" style="width:30em;" />
+        </div>
+
+        <br />
+
+        <div>Texte :</div>
+        <div>
+            <textarea rows = "6" cols = "100" th:field="*{texte}"></textarea>
+        </div>
+
+        <div>
+            <input id="buttonCreer" class="btn btn-success" type="submit" value="Créer" />
+        </div>
+
+    </form>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+    function valideEtude() {
+        return true;
+    }
+</script>
+</body>
+</html>
