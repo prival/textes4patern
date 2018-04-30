@@ -9,6 +9,7 @@ import textes.service.EtudeService;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -49,6 +50,30 @@ public class EtudeController {
         model.addAttribute("paragraphes", paragraphes);
 
         return "etude";
+    }
+
+
+    @GetMapping("/phrases/{nom}")
+    public String phrases(@PathVariable String nom, Model model, HttpSession session) {
+        List<String> phrases = etudeService.getPhrasesEtudeByNom(nom);
+
+//        session.setAttribute("paragraphes", paragraphes);
+
+        model.addAttribute("phrases", phrases);
+
+        return "phrases";
+    }
+
+
+    @GetMapping("/mots/{nom}")
+    public String mots(@PathVariable String nom, Model model, HttpSession session) {
+        HashMap<String, Integer> mots = etudeService.getMotsEtudeByNom(nom);
+
+//        session.setAttribute("paragraphes", paragraphes);
+
+        model.addAttribute("mots", mots);
+
+        return "mots";
     }
 
 

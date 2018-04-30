@@ -22,11 +22,27 @@
 
     <br/>
 
-    <div th:each="etude : ${etudes}" th:name="${etude.nom}">
-        <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
-            <span th:text="${etude.nom}"></span>
-        </a>
-    </div>
+    <table>
+        <tbody>
+            <tr th:each="etude : ${etudes}" th:name="${etude.nom}">
+                <td>
+                    <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
+                        <span th:text="${etude.nom}"></span>
+                    </a>
+                </td>
+                <td style="padding-left:10px;">
+                    <a th:id="|phrases_id_${etude.nom}|" th:href="@{|/phrases/${etude.nom}|}">
+                        <span th:text="phrases" style="color:red;"></span>
+                    </a>
+                </td>
+                <td style="padding-left:10px;">
+                    <a th:id="|mots_id_${etude.nom}|" th:href="@{|/mots/${etude.nom}|}">
+                        <span th:text="mots" style="color:red;"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <br/>
     <br/>

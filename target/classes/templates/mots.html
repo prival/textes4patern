@@ -17,60 +17,30 @@
 <div class="main">
 
     <br/>
+    <br/>
 
-    <h4>Textes :</h4>
+    Nb mots : <div th:text="${#maps.size(mots)}"></div>
+    <br/>
+    <!--<span th:each="phrase, iter : ${phrases}">-->
+        <!--<a th:text="${iter.count}" th:href="@{|#form${iter.index}|}"></a>-->
+        <!--<span th:text="${iter.last}? '' : ' - '"></span>-->
+    <!--</span>-->
 
+    <br/>
     <br/>
 
     <table>
         <tbody>
-            <tr th:each="etude : ${etudes}" th:name="${etude.nom}">
+            <tr th:each="pair, iter : ${mots}">
                 <td>
-                    <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
-                        <span th:text="${etude.nom}"></span>
-                    </a>
+                    <span th:text="${pair.key}"></span>
                 </td>
-                <td style="padding-left:10px;">
-                    <a th:id="|phrases_id_${etude.nom}|" th:href="@{|/phrases/${etude.nom}|}">
-                        <span th:text="phrases" style="color:red;"></span>
-                    </a>
-                </td>
-                <td style="padding-left:10px;">
-                    <a th:id="|mots_id_${etude.nom}|" th:href="@{|/mots/${etude.nom}|}">
-                        <span th:text="mots" style="color:red;"></span>
-                    </a>
+                <td style="padding-left: 10px;">
+                    <span th:text="${pair.value}"></span>
                 </td>
             </tr>
         </tbody>
     </table>
-
-    <br/>
-    <br/>
-
-    <h4>Nouveau texte :</h4>
-
-    <br/>
-    <br/>
-
-    <form th:action="@{/addEtude}" onsubmit="return valideEtude();" th:object="${etude}" method="post">
-
-        <div>Titre :</div>
-        <div>
-            <input type="text" id="nom" th:field="*{nom}" style="width:30em;" />
-        </div>
-
-        <br />
-
-        <div>Texte :</div>
-        <div>
-            <textarea rows = "6" cols = "100" th:field="*{texte}"></textarea>
-        </div>
-
-        <div>
-            <input id="buttonCreer" class="btn btn-success" type="submit" value="Créer" />
-        </div>
-
-    </form>
 
 </div>
 
@@ -79,8 +49,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
-    function valideEtude() {
-        return true;
+    function scrollTo(hash) {
+        location.hash = "#" + hash;
     }
 </script>
 </body>
