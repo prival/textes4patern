@@ -41,8 +41,10 @@ public class EtudeController {
 
 
     @GetMapping("/etude/{nom}")
-    public String etudes(@PathVariable String nom, Model model) {
+    public String etudes(@PathVariable String nom, Model model, HttpSession session) {
         List<String> paragraphes = etudeService.getLignesEtudeByNom(nom);
+
+        session.setAttribute("paragraphes", paragraphes);
 
         model.addAttribute("paragraphes", paragraphes);
 
@@ -50,10 +52,18 @@ public class EtudeController {
     }
 
 
-    @GetMapping("/paragraphe/{index}")
-    public String paragraphe(@PathVariable String index, Model model) {
+    @PostMapping("/paragraphe/{index}")
+    public String paragraphe(@PathVariable String index, Model model, HttpSession session) {
 
-        return "etude";
+        List<String> paragraphes = (List<String>) session.getAttribute("paragraphes");
+
+        String paragraphe = paragraphes.get(Integer.parseInt(index));
+
+        List<String> mots = etudeService.getMotsByTexte(paragraphe);
+
+        model.addAttribute("mots", mots);
+
+        return "paragraphe";
     }
 
 }

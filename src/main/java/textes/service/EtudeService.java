@@ -80,4 +80,36 @@ public class EtudeService {
 
         return paragraphes;
     }
+
+    public List<String> getMotsByTexte(String texte) {
+
+        List<String> result = new ArrayList<String>();
+
+        texte = texte.replace(".", "");
+        texte = texte.replace(",", "");
+        texte = texte.replace(";", "");
+        texte = texte.replace("?", "");
+        texte = texte.replace("!", "");
+
+        String[] mots = texte.split(" ");
+
+        for (int i=0; i< mots.length; i++) {
+            String mot = mots[i];
+            if (!contenuDans(result, mot)) {
+                result.add(mot);
+            }
+        }
+
+        return result;
+    }
+
+    public boolean contenuDans(List<String> mots, String motATrouve) {
+        for (String mot : mots) {
+            if(motATrouve.toLowerCase().equals(mot.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -16,11 +16,22 @@
 <!-- page -->
 <div class="main">
 
+    <br/>
+
+    <h4>Textes :</h4>
+
+    <br/>
+
     <div th:each="etude : ${etudes}" th:name="${etude.nom}">
         <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
             <span th:text="${etude.nom}"></span>
         </a>
     </div>
+
+    <br/>
+    <br/>
+
+    <h4>Nouveau texte :</h4>
 
     <br/>
     <br/>
