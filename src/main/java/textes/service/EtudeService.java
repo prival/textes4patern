@@ -178,6 +178,128 @@ public class EtudeService {
         return result;
     }
 
+    /**
+     * Découpe le fichier en 50 pages avec un nombre de lignes moyen par page
+     * @param nom
+     * @return
+     */
+    public List<List<String>> getDecoupe50EtudeByNomAvecLignes(String nom) {
+
+        File file = new File("src//main//resources//etudes//" + nom);
+
+        List<List<String>> decoupes = new ArrayList<List<String>>();
+
+        try {
+            int nbLignes = countLines("src//main//resources//etudes//" + nom);
+
+            int nbLignesParDecoupe = nbLignes / 50;
+            int nbCurrentLigneDecoupe = 1;
+
+            List<String> lignes = Files.readAllLines(file.toPath());
+
+            List<String> paragraphes = new ArrayList<String>();
+
+            for (String ligne : lignes) {
+                paragraphes.add(ligne);
+                if (nbCurrentLigneDecoupe > nbLignesParDecoupe) {
+                    decoupes.add(paragraphes);
+                    paragraphes = new ArrayList<String>();
+                    nbCurrentLigneDecoupe = 0;
+                }
+
+                nbCurrentLigneDecoupe++;
+            }
+
+            if (paragraphes.size()>0) {
+                decoupes.add(paragraphes);
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return decoupes;
+    }
+
+
+    /**
+     * Pas utilisé
+     * Découpe un texte en 50 pages en utilisant une moyenne de mots à avoir par page (pas satisfaisant)
+     * @param nom
+     * @return
+     */
+    public List<List<String>> getDecoupe50EtudeByNomAvecMots(String nom) {
+
+        File file = new File("src//main//resources//etudes//" + nom);
+
+        List<List<String>> decoupes = new ArrayList<List<String>>();
+
+        try {
+            int nbMots = countWords("src//main//resources//etudes//" + nom);
+
+            int nbMotsParDecoupe = nbMots / 50;
+            int nbCurrentMotDecoupe = 0;
+
+            List<String> lignes = Files.readAllLines(file.toPath());
+
+            List<String> paragraphes = new ArrayList<String>();
+
+            for (String ligne : lignes) {
+                paragraphes.add(ligne);
+                if (nbCurrentMotDecoupe > nbMotsParDecoupe) {
+                    decoupes.add(paragraphes);
+                    paragraphes = new ArrayList<String>();
+                    nbCurrentMotDecoupe = 0;
+                }
+
+                nbCurrentMotDecoupe += ligne.split("\\s+").length;
+            }
+
+            if (paragraphes.size()>0) {
+                decoupes.add(paragraphes);
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return decoupes;
+    }
+
+
+    public List<HashMap<String, Integer>> getMotsDecoupe(List<List<String>> decoupes) {
+
+        List<HashMap<String, Integer>> mots = new ArrayList<HashMap<String, Integer>>();
+
+        for (List<String> decoupe : decoupes) {
+            HashMap<String, Integer> motsDecoupe = new HashMap<String, Integer>();
+
+            for (String ligne : decoupe) {
+                ligne = ligne.replace(".", "");
+                ligne = ligne.replace(",", "");
+                ligne = ligne.replace(";", "");
+                ligne = ligne.replace("?", "");
+                ligne = ligne.replace("!", "");
+                ligne = ligne.replace("(", "");
+                ligne = ligne.replace(")", "");
+                ligne = ligne.replace("[", "");
+                ligne = ligne.replace("]", "");
+
+                String[] motsLigne = ligne.split(" ");
+
+                for (int i=0; i< motsLigne.length; i++) {
+                    String motLigne = motsLigne[i];
+                    motsDecoupe = contenuDans(motsDecoupe, motLigne);
+                }
+            }
+
+            mots.add(motsDecoupe);
+        }
+
+        return mots;
+    }
+
+
     public boolean contenuDans(List<String> mots, String motATrouve) {
         for (String mot : mots) {
             if(motATrouve.toLowerCase().equals(mot.toLowerCase())) {
@@ -237,6 +359,43 @@ public class EtudeService {
 
         }
         return sortedMap;
+    }
 
+
+    public int countLines(String filename) throws IOException {
+        InputStream is = new BufferedInputStream(new FileInputStream(filename));
+        try {
+            byte[] c = new byte[1024];
+            int count = 0;
+            int readChars = 0;
+            boolean empty = true;
+            while ((readChars = is.read(c)) != -1) {
+                empty = false;
+                for (int i = 0; i < readChars; ++i) {
+                    if (c[i] == '\n') {
+                        ++count;
+                    }
+                }
+            }
+            return (count == 0 && !empty) ? 1 : count;
+        } finally {
+            is.close();
+        }
+    }
+
+
+    public int countWords(String filename) throws IOException {
+
+        File file = new File(filename);
+        int count=0;
+
+        try(Scanner sc = new Scanner(new FileInputStream(file))){
+            while(sc.hasNext()){
+                sc.next();
+                count++;
+            }
+        }
+
+        return count;
     }
 }

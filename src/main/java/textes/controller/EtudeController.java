@@ -45,7 +45,7 @@ public class EtudeController {
     public String etudes(@PathVariable String nom, Model model, HttpSession session) {
         List<String> paragraphes = etudeService.getLignesEtudeByNom(nom);
 
-        session.setAttribute("paragraphes", paragraphes);
+//        session.setAttribute("paragraphes", paragraphes);
 
         model.addAttribute("paragraphes", paragraphes);
 
@@ -89,6 +89,20 @@ public class EtudeController {
         model.addAttribute("mots", mots);
 
         return "paragraphe";
+    }
+
+
+    @GetMapping("/decoupe/{nom}")
+    public String decoupe2(@PathVariable String nom, Model model, HttpSession session) {
+        List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecLignes(nom);
+
+        List<HashMap<String, Integer>> mots = etudeService.getMotsDecoupe(decoupes);
+
+//        session.setAttribute("decoupes", decoupes);
+
+        model.addAttribute("decoupes", decoupes);
+
+        return "decoupe";
     }
 
 }

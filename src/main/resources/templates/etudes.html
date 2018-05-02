@@ -40,6 +40,11 @@
                         <span th:text="mots" style="color:red;"></span>
                     </a>
                 </td>
+                <td style="padding-left:10px;">
+                    <a th:id="|decoupe_id_${etude.nom}|" th:href="@{|/decoupe/${etude.nom}|}">
+                        <span th:text="decoupe" style="color:red;"></span>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>

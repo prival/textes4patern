@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- menu -->
+<div th:insert="menu :: sidenav"></div>
+
+<!-- page -->
+<div class="main">
+
+    <br/>
+
+    <span th:each="decoupe, iter : ${decoupes}">
+        <a class="aDecoupes" th:text="${iter.count}" th:id="@{|aDecoupe${iter.count}|}" th:onclick="@{|showDecoupe(${iter.count});|}" style="cursor:pointer;"></a>
+        <span th:text="${iter.last}? '' : ' - '"></span>
+    </span>
+
+    <br/>
+
+    <button id="open-mots" class="btn btn-primary">Mots</button>
+
+    <br/>
+    <br/>
+        <div class="divDecoupes" th:each="decoupe, iter : ${decoupes}" th:id="@{|divDecoupe${iter.count}|}" style="display:none;">
+            <div th:each="paragraphe, iteration : ${decoupe}">
+                <span th:text="${#strings.isEmpty(paragraphe)}? '&nbsp;' : ${paragraphe}"></span>
+            </div>
+        </div>
+
+    <div id="dialog" title="Basic dialog">
+        <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+    function showDecoupe(page) {
+        $('.aDecoupes').css('color', 'black');
+        $('#aDecoupe'+page).css('color', 'blue');
+
+        $('.divDecoupes').css('display', 'none');
+        $('#divDecoupe'+page).css('display', 'block');
+    }
+
+    $( function() {
+        $( "#dialog" ).dialog({
+            autoOpen: false,
+            show: {
+            },
+            hide: {
+            }
+        });
+
+        $( "#open-mots" ).on( "click", function() {
+            $( "#dialog" ).dialog( "open" );
+        });
+    });
+</script>
+</body>
+</html>
