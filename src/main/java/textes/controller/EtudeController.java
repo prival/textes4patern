@@ -1,16 +1,21 @@
 package textes.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import textes.model.Commentaire;
 import textes.model.Etude;
 import textes.service.EtudeService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class EtudeController {
@@ -94,15 +99,40 @@ public class EtudeController {
 
     @GetMapping("/decoupe/{nom}")
     public String decoupe2(@PathVariable String nom, Model model, HttpSession session) {
-        List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecLignes(nom);
+//        List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecLignes(nom);
+        List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecMots(nom);
 
-        List<HashMap<String, Integer>> mots = etudeService.getMotsDecoupe(decoupes);
+        List<String> commentaires = etudeService.getCommentairesEtude(nom);
 
-//        session.setAttribute("decoupes", decoupes);
+//        List<HashMap<String, Integer>> mots = etudeService.getMotsDecoupe(decoupes);
 
+        model.addAttribute("nom", nom);
         model.addAttribute("decoupes", decoupes);
+        model.addAttribute("commentaires", commentaires);
+//        model.addAttribute("mots", mots);
 
         return "decoupe";
     }
 
+
+    @PostMapping("/saveCommentaire")
+    public ResponseEntity<?> saveCommentaireViaAjax(
+            @Valid @RequestBody Commentaire commentaire, Errors errors) {
+
+        etudeService.saveCommentaire(commentaire);
+
+        return ResponseEntity.ok("ok");
+    }
+
+
+    @GetMapping("/commentaires/{nom}")
+    public String commentaires(@PathVariable String nom, Model model, HttpSession session) {
+
+        List<String> commentaires = etudeService.getCommentairesEtude(nom);
+
+        model.addAttribute("nom", nom);
+        model.addAttribute("commentaires", commentaires);
+
+        return "commentaires";
+    }
 }

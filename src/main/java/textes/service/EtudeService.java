@@ -3,11 +3,14 @@ package textes.service;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import textes.model.Commentaire;
 import textes.model.Etude;
 
 import javax.validation.Valid;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.text.BreakIterator;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -223,8 +226,9 @@ public class EtudeService {
 
 
     /**
-     * Pas utilisé
-     * Découpe un texte en 50 pages en utilisant une moyenne de mots à avoir par page (pas satisfaisant)
+     * Découpe un texte en 50 pages (si possible) en utilisant une moyenne de mots à avoir par page
+     * mais en ne coupant pas au milieu d'une ligne
+     * A chaque page faite, on recalcule le nombre de mots restant pour redefinir la moyenne de mots pour les pages restantes
      * @param nom
      * @return
      */
@@ -235,9 +239,16 @@ public class EtudeService {
         List<List<String>> decoupes = new ArrayList<List<String>>();
 
         try {
-            int nbMots = countWords("src//main//resources//etudes//" + nom);
+            int currentIndexLigne = 0; // ligne courante
+            int currentIndexPage = 0; // page courante de la decoupe
 
+            // nb mots total
+            int nbMots = countWords("src//main//resources//etudes//" + nom, 0);
+
+            // nb de mots moyens par page
             int nbMotsParDecoupe = nbMots / 50;
+
+            // nb courant de mots contenu dans la page en cours
             int nbCurrentMotDecoupe = 0;
 
             List<String> lignes = Files.readAllLines(file.toPath());
@@ -245,14 +256,25 @@ public class EtudeService {
             List<String> paragraphes = new ArrayList<String>();
 
             for (String ligne : lignes) {
+                currentIndexLigne++;
                 paragraphes.add(ligne);
+
+                // si on a dépassé le nb de mots à avoir dans la page
                 if (nbCurrentMotDecoupe > nbMotsParDecoupe) {
+
+                    // nouvelle page
                     decoupes.add(paragraphes);
                     paragraphes = new ArrayList<String>();
+                    currentIndexPage++;
                     nbCurrentMotDecoupe = 0;
+
+                    // recalcul du nb moyen de mots
+                    nbMots = countWords("src//main//resources//etudes//" + nom, currentIndexLigne);
+
+                    nbMotsParDecoupe = nbMots / (50-currentIndexPage);
                 }
 
-                nbCurrentMotDecoupe += ligne.split("\\s+").length;
+                nbCurrentMotDecoupe += ligne.split(" ").length;
             }
 
             if (paragraphes.size()>0) {
@@ -267,29 +289,46 @@ public class EtudeService {
     }
 
 
+    /**
+     * Avoir un listing des mots par page, avec nombre d'occurences pour chaque mot
+     * @param decoupes
+     * @return
+     */
     public List<HashMap<String, Integer>> getMotsDecoupe(List<List<String>> decoupes) {
+
+        Pattern p = Pattern.compile("^[a-zA-ZÉÀéèêàùîôç]");
 
         List<HashMap<String, Integer>> mots = new ArrayList<HashMap<String, Integer>>();
 
         for (List<String> decoupe : decoupes) {
             HashMap<String, Integer> motsDecoupe = new HashMap<String, Integer>();
 
-            for (String ligne : decoupe) {
-                ligne = ligne.replace(".", "");
-                ligne = ligne.replace(",", "");
-                ligne = ligne.replace(";", "");
-                ligne = ligne.replace("?", "");
-                ligne = ligne.replace("!", "");
-                ligne = ligne.replace("(", "");
-                ligne = ligne.replace(")", "");
-                ligne = ligne.replace("[", "");
-                ligne = ligne.replace("]", "");
+            List<String> motsTrouve = new ArrayList<String>();
 
-                String[] motsLigne = ligne.split(" ");
+            for (String ligne : decoupe) {
+//                String[] motsLigne = ligne.split("\\W+|^[éèêàùçÉÀ]");
+                String[] motsLigne = ligne.split("[ .!?,;’'()]");
 
                 for (int i=0; i< motsLigne.length; i++) {
                     String motLigne = motsLigne[i];
-                    motsDecoupe = contenuDans(motsDecoupe, motLigne);
+                    Matcher m = p.matcher(motLigne);
+                    if (!"".equals(motLigne) && m.find() && motLigne.length()>3) {
+                        motsTrouve.add(motLigne);
+                    }
+                }
+            }
+
+            Collections.sort(motsTrouve);
+
+            String currentMot = "";
+
+            for (String mot : motsTrouve) {
+                if (!currentMot.equals(mot)) {
+                    currentMot = mot;
+                    motsDecoupe.put(mot, 1);
+                }
+                else {
+                    motsDecoupe.put(mot, motsDecoupe.get(mot) + 1);
                 }
             }
 
@@ -297,6 +336,84 @@ public class EtudeService {
         }
 
         return mots;
+    }
+
+    public List<String> getCommentairesEtude(String nomFichier) {
+
+        List<String> result = new ArrayList<String>();
+
+        try {
+            File file = new File("src//main//resources//etudes//~commentaires//" + nomFichier);
+
+            List<String> lignes = Files.readAllLines(file.toPath());
+
+            StringBuffer ligneCommentaire = new StringBuffer();
+
+            int nextPage = 1;
+
+            for (String ligne : lignes) {
+                if (("~~"+nextPage).equals(ligne)) {
+                    if (nextPage>1) {
+                        result.add(ligneCommentaire.toString());
+                        ligneCommentaire = new StringBuffer();
+                    }
+                    nextPage++;
+                }
+                else {
+                    ligneCommentaire.append(ligne);
+                }
+            }
+        }
+        catch (NoSuchFileException e) {
+            try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("src//main//resources//etudes//~commentaires//" + nomFichier));
+
+            for(int i=1;i<=50;i++) {
+                bw.write("~~"+i);
+                bw.write("\n");
+            }
+
+            bw.close();
+            e.printStackTrace();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public void saveCommentaire(Commentaire commentaire) {
+        File file = new File("src//main//resources//etudes//~commentaires//" + commentaire.getNom());
+
+        try {
+            List<String> lignes = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+
+            int currentPosition = 0;
+
+            for (String ligne : lignes) {
+                currentPosition++;
+                if (("~~"+commentaire.getPage()).equals(ligne)) {
+
+                    int nextPage = commentaire.getPage() + 1;
+
+                    while (!("~~"+nextPage).equals(lignes.get(currentPosition))) {
+                        lignes.remove(currentPosition);
+                    }
+                    break;
+                }
+            }
+
+            lignes.add(currentPosition, commentaire.getCommentaire());
+
+            Files.write(file.toPath(), lignes, StandardCharsets.UTF_8);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -362,6 +479,12 @@ public class EtudeService {
     }
 
 
+    /**
+     * Compte le nombre de lignes dans un fichier
+     * @param filename
+     * @return
+     * @throws IOException
+     */
     public int countLines(String filename) throws IOException {
         InputStream is = new BufferedInputStream(new FileInputStream(filename));
         try {
@@ -384,15 +507,24 @@ public class EtudeService {
     }
 
 
-    public int countWords(String filename) throws IOException {
+    /**
+     * Compte le nombre de mots dans un fichier à partir d'une ligne index
+     * @param filename
+     * @param index
+     * @return
+     * @throws IOException
+     */
+    public int countWords(String filename, int index) throws IOException {
 
-        File file = new File(filename);
         int count=0;
+        int currentIndex = 0;
 
-        try(Scanner sc = new Scanner(new FileInputStream(file))){
-            while(sc.hasNext()){
-                sc.next();
-                count++;
+        List<String> lignes = Files.readAllLines((new File(filename)).toPath());
+
+        for (String ligne : lignes) {
+            currentIndex++;
+            if (currentIndex>=index) {
+                count += ligne.split(" ").length;
             }
         }
 

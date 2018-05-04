@@ -45,6 +45,11 @@
                         <span th:text="decoupe" style="color:red;"></span>
                     </a>
                 </td>
+                <td style="padding-left:10px;">
+                    <a th:id="|commentaires_id_${etude.nom}|" th:href="@{|/commentaires/${etude.nom}|}">
+                        <span th:text="commentaires" style="color:red;"></span>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
