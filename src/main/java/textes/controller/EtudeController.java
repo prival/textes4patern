@@ -117,9 +117,14 @@ public class EtudeController {
 
     @PostMapping("/saveCommentaire")
     public ResponseEntity<?> saveCommentaireViaAjax(
+            Model model,
             @Valid @RequestBody Commentaire commentaire, Errors errors) {
 
         etudeService.saveCommentaire(commentaire);
+
+
+        List<String> commentaires = etudeService.getCommentairesEtude(commentaire.getNom());
+        model.addAttribute("commentaires", commentaires);
 
         return ResponseEntity.ok("ok");
     }

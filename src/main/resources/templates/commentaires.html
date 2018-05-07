@@ -19,8 +19,9 @@
 
     <br/>
     <br/>
-    <div class="commentaires" th:each="commentaire, iter : ${commentaires}" th:id="@{|commentaire&{iter.count}|}" style="display:none;">
-        <span th:text="${iter.count}">.</span>
+    <div class="commentaires" th:each="commentaire, iter : ${commentaires}" th:id="@{|commentaire${iter.count}|}">
+        <span th:text="${iter.count}" style="font-weight:bold;">.</span>
+        <br/>
         <span th:text="${commentaire}"></span>
 
         <br/>

@@ -36,7 +36,7 @@
     <br/>
     <br/>
     <div class="divDecoupes" th:each="decoupe, iter : ${decoupes}" th:id="@{|divDecoupe${iter.count}|}" style="display:none;">
-        <div th:each="paragraphe, iteration : ${decoupe}" th:id="@{|paragraphe${iteration.count}|}" class="paragraphe">
+        <div th:each="paragraphe, iteration : ${decoupe}" th:id="@{|paragraphe${iteration.count}|}" class="paragraphe" style="width:40em;">
             <span th:text="${#strings.isEmpty(paragraphe)}? '&nbsp;' : ${paragraphe}"></span>
         </div>
     </div>
@@ -54,7 +54,8 @@
         <form>
             <fieldset>
                 <textarea id="commentaire" cols="100" rows="8"></textarea>
-                <!--<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">-->
+                <input typ="button" id="submit-commentaire" class="btn btn-success" value="Enregistrer" />
+                <input typ="button" id="ferme-commentaire" class="btn btn-danger" value="Fermer" />
             </fieldset>
         </form>
     </div>
@@ -92,10 +93,11 @@
           modal: true,
           open: function( event, ui ) {
             var page = $("#hiddenPage").val();
-            $("#dialog-textarea").val($("#commentaire"+page).val());
-          },
-          beforeClose: function( event, ui ) {
+            $("#commentaire").val($("#commentaire"+page).val());
+          }
+        });
 
+        $( "#submit-commentaire" ).on( "click", function() {
             var data = {};
             data["nom"] = $("#hiddenNom").val();
             data["page"] = $("#hiddenPage").val();
@@ -114,7 +116,12 @@
                 error: function (e) {
                 }
             });
-          }
+
+            $( "#dialog-textarea" ).dialog( "close" );
+        });
+
+        $( "#ferme-commentaire" ).on( "click", function() {
+            $( "#dialog-textarea" ).dialog( "close" );
         });
 
         $( ".paragraphe" ).on( "click", function() {
