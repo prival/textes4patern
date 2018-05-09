@@ -11,9 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import textes.exception.ResourceNotFoundException;
 import textes.model.Categorie;
+import textes.model.Etude;
 import textes.repository.CategorieRepository;
 
 import javax.validation.Valid;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,11 +30,23 @@ public class CategorieService {
     CategorieRepository categorieRepository;
 
     public List<Categorie> getAllCategories() {
-        return categorieRepository.findAll(sortByOrdreAsc());
-    }
 
-    private Sort sortByOrdreAsc() {
-        return new Sort(Sort.Direction.ASC, "ordre");
+        File folder = new File("src//main//resources//langues//");
+        File[] listOfFiles = folder.listFiles();
+
+        List<Categorie> result = new ArrayList<Categorie>();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+
+            Categorie categorie = new Categorie();
+
+            if (listOfFiles[i].isDirectory()) {
+                categorie.setLibelle(listOfFiles[i].getName());
+                result.add(categorie);
+            }
+        }
+
+        return result;
     }
 
     public Categorie getCategorieById(@PathVariable(value = "id") Long id) {
@@ -36,11 +54,19 @@ public class CategorieService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categorie", "id", id));
     }
 
-    public Categorie createCategorie(@Valid @RequestBody Categorie categorie) {
-        return categorieRepository.save(categorie);
+    public void createCategorie(@Valid @RequestBody Categorie categorie) {
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("src//main//resources//langues//" + categorie.getLibelle()));
+
+            bw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteCategorie(@Valid @RequestBody long id) {
-        categorieRepository.deleteById(id);
+
     }
 }

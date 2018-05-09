@@ -8,6 +8,39 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/menu.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <style>
+        .ui-dialog-titlebar {
+            display: none;
+        }
+
+        .ui-dialog-content {
+            height: 40em;
+        }
+
+        #buttonToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99; /* Make sure it does not overlap */
+            border: none; /* Remove borders */
+            outline: none; /* Remove outline */
+            background-color: grey;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px; /* Rounded corners */
+            font-size: 18px;
+        }
+
+        #buttonToTop:hover {
+            background-color: #555; /* Add a dark-grey background on hover */
+        }
+
+        p {
+            margin-bottom: 0em;
+        }
+    </style>
 </head>
 <body>
 
@@ -31,37 +64,34 @@
 
     <br/>
 
-    <button id="open-mots" class="btn btn-primary">Mots</button>
-
     <br/>
     <br/>
     <div class="divDecoupes" th:each="decoupe, iter : ${decoupes}" th:id="@{|divDecoupe${iter.count}|}" style="display:none;">
-        <div th:each="paragraphe, iteration : ${decoupe}" th:id="@{|paragraphe${iteration.count}|}" class="paragraphe" style="width:40em;">
+        <p align="justify" th:each="paragraphe, iteration : ${decoupe}" th:id="@{|paragraphe${iteration.count}|}" class="paragraphe" style="width:40em;">
             <span th:text="${#strings.isEmpty(paragraphe)}? '&nbsp;' : ${paragraphe}"></span>
-        </div>
+        </p>
     </div>
 
     <br/>
     <br/>
-    <div class="divMotsDecoupes" th:each="motsDecoupe, iter : ${mots}" th:id="@{|divMotsDecoupes${iter.count}|}" style="display:none;">
-        <div th:each="motDecoupe, iteration : ${motsDecoupe}">
+
+    <!--<div class="divMotsDecoupes" th:each="motsDecoupe, iter : ${mots}" th:id="@{|divMotsDecoupes${iter.count}|}" style="display:none;">-->
+        <!--<div th:each="motDecoupe, iteration : ${motsDecoupe}">-->
             <!--<span th:text="${motDecoupe.key}"></span>-->
             <!--<span th:text="${motDecoupe.value}"></span>-->
-        </div>
-    </div>
+        <!--</div>-->
+    <!--</div>-->
+
+    <button onclick="topFunction()" id="buttonToTop" title="Go to top">Top</button>
 
     <div id="dialog-textarea" title="">
         <form>
             <fieldset>
-                <textarea id="commentaire" cols="100" rows="8"></textarea>
+                <textarea id="commentaire" cols="100" rows="12"></textarea>
                 <input typ="button" id="submit-commentaire" class="btn btn-success" value="Enregistrer" />
                 <input typ="button" id="ferme-commentaire" class="btn btn-danger" value="Fermer" />
             </fieldset>
         </form>
-    </div>
-
-    <div id="dialog" title="Basic dialog">
-        <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
     </div>
 
 </div>
@@ -128,19 +158,24 @@
             $( "#dialog-textarea" ).dialog( "open" );
         });
 
-
-        $( "#dialog" ).dialog({
-            autoOpen: false,
-            show: {
-            },
-            hide: {
-            }
-        });
-
-        $( "#open-mots" ).on( "click", function() {
-            $( "#dialog" ).dialog( "open" );
-        });
     });
+
+    // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("buttonToTop").style.display = "block";
+            } else {
+                document.getElementById("buttonToTop").style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
 </script>
 </body>
 </html>

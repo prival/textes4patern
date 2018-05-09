@@ -33,8 +33,6 @@ public class EtudeService {
                 etude.setNom(listOfFiles[i].getName());
                 result.add(etude);
             }
-//            else if (listOfFiles[i].isDirectory()) {
-//            }
         }
 
         return result;
@@ -85,74 +83,6 @@ public class EtudeService {
         }
 
         return paragraphes;
-    }
-
-    public List<String> getPhrasesEtudeByNom(String nom) {
-
-        File file = new File("src//main//resources//etudes//" + nom);
-
-        List<String> phrases = new ArrayList<String>();
-
-        try {
-            List<String> lignes = Files.readAllLines(file.toPath());
-
-            for (String ligne : lignes) {
-
-                BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.FRANCE);
-
-                iterator.setText(ligne);
-                int start = iterator.first();
-                for (int end = iterator.next();
-                     end != BreakIterator.DONE;
-                     start = end, end = iterator.next()) {
-                        phrases.add(ligne.substring(start,end));
-                }
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return phrases;
-    }
-
-    public HashMap<String, Integer> getMotsEtudeByNom(String nom) {
-
-        File file = new File("src//main//resources//etudes//" + nom);
-
-        HashMap<String, Integer> result = new HashMap<String, Integer>();
-
-        try {
-            List<String> lignes = Files.readAllLines(file.toPath());
-
-            for (String ligne : lignes) {
-
-                ligne = ligne.replace(".", "");
-                ligne = ligne.replace(",", "");
-                ligne = ligne.replace(";", "");
-                ligne = ligne.replace("?", "");
-                ligne = ligne.replace("!", "");
-                ligne = ligne.replace("(", "");
-                ligne = ligne.replace(")", "");
-                ligne = ligne.replace("[", "");
-                ligne = ligne.replace("]", "");
-
-                String[] mots = ligne.split(" ");
-
-                for (int i=0; i< mots.length; i++) {
-                    String mot = mots[i];
-                    result = contenuDans(result, mot);
-                }
-
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        result = sortHashMapByValues(result);
-
-        return result;
     }
 
     public List<String> getMotsByTexte(String texte) {

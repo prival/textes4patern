@@ -21,7 +21,7 @@ public class Categorie {
     @OrderBy("ordre")
     private List<Texte> textes;
 
-    protected Categorie() {
+    public Categorie() {
     }
 
     public Categorie(String libelle, int ordre) {

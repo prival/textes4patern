@@ -9,6 +9,9 @@ import textes.model.Texte;
 import textes.repository.TexteRepository;
 
 import javax.validation.Valid;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -26,8 +29,26 @@ public class TexteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Texte", "id", id));
     }
 
-    public Texte createTexte(@Valid @RequestBody Texte texte) {
-        return texteRepository.save(texte);
+    public void createTexte(@Valid @RequestBody Texte texte) {
+
+        try {
+            String categoriePath = "src//main//resources//etudes//" + texte.getCategorie().getLibelle() + "//";
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter(categoriePath + texte.getLibelle()));
+
+            bw.write(texte.getFirstText());
+
+            bw.close();
+
+            bw = new BufferedWriter(new FileWriter(categoriePath + texte.getLibelle() + "~"));
+
+            bw.write(texte.getSecondText());
+
+            bw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateTexte(int ordre, long id) { texteRepository.updateTexte(ordre, id);}

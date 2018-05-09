@@ -58,30 +58,6 @@ public class EtudeController {
     }
 
 
-    @GetMapping("/phrases/{nom}")
-    public String phrases(@PathVariable String nom, Model model, HttpSession session) {
-        List<String> phrases = etudeService.getPhrasesEtudeByNom(nom);
-
-//        session.setAttribute("paragraphes", paragraphes);
-
-        model.addAttribute("phrases", phrases);
-
-        return "phrases";
-    }
-
-
-    @GetMapping("/mots/{nom}")
-    public String mots(@PathVariable String nom, Model model, HttpSession session) {
-        HashMap<String, Integer> mots = etudeService.getMotsEtudeByNom(nom);
-
-//        session.setAttribute("paragraphes", paragraphes);
-
-        model.addAttribute("mots", mots);
-
-        return "mots";
-    }
-
-
     @PostMapping("/paragraphe/{index}")
     public String paragraphe(@PathVariable String index, Model model, HttpSession session) {
 
@@ -99,7 +75,6 @@ public class EtudeController {
 
     @GetMapping("/decoupe/{nom}")
     public String decoupe2(@PathVariable String nom, Model model, HttpSession session) {
-//        List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecLignes(nom);
         List<List<String>> decoupes = etudeService.getDecoupe50EtudeByNomAvecMots(nom);
 
         List<String> commentaires = etudeService.getCommentairesEtude(nom);
