@@ -268,6 +268,54 @@ public class EtudeService {
         return mots;
     }
 
+
+    /**
+     * Avoir un listing des mots par page, avec nombre d'occurences pour chaque mot
+     * @param lignes
+     * @return
+     */
+    public List<HashMap<String, Integer>> getMotsLignes(List<String> lignes) {
+
+        Pattern p = Pattern.compile("^[a-zA-ZÉÀéèêàùîôç]");
+
+        List<HashMap<String, Integer>> mots = new ArrayList<HashMap<String, Integer>>();
+
+        for (String ligne : lignes) {
+            HashMap<String, Integer> motsDecoupe = new HashMap<String, Integer>();
+
+            List<String> motsTrouve = new ArrayList<String>();
+
+            String[] motsLigne = ligne.split("[ .!?,;’'()]");
+
+            for (int i=0; i< motsLigne.length; i++) {
+                String motLigne = motsLigne[i];
+                Matcher m = p.matcher(motLigne);
+                if (!"".equals(motLigne) && m.find() && motLigne.length()>3) {
+                    motsTrouve.add(motLigne);
+                }
+            }
+
+            Collections.sort(motsTrouve);
+
+            String currentMot = "";
+
+            for (String mot : motsTrouve) {
+                if (!currentMot.equals(mot)) {
+                    currentMot = mot;
+                    motsDecoupe.put(mot, 1);
+                }
+                else {
+                    motsDecoupe.put(mot, motsDecoupe.get(mot) + 1);
+                }
+            }
+
+            mots.add(motsDecoupe);
+        }
+
+        return mots;
+    }
+
+
     public List<String> getCommentairesEtude(String nomFichier) {
 
         List<String> result = new ArrayList<String>();

@@ -26,21 +26,33 @@
         <!--<span th:text="${iter.last}? '' : ' - '"></span>-->
     <!--</span>-->
 
+    <span th:each="motsDecoupe, iter : ${mots}">
+        <a class="aMotsDecoupes" th:text="${iter.count}" th:id="@{|aMotsDecoupe${iter.count}|}" th:onclick="@{|showMotsDecoupe(${iter.count});|}" style="cursor:pointer;"></a>
+        <span th:text="${iter.last}? '' : ' - '"></span>
+    </span>
+
     <br/>
     <br/>
 
-    <table>
-        <tbody>
-            <tr th:each="pair, iter : ${mots}">
-                <td>
-                    <span th:text="${pair.key}"></span>
-                </td>
-                <td style="padding-left: 10px;">
-                    <span th:text="${pair.value}"></span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="divMotsDecoupes" th:each="motsDecoupe, iter : ${mots}" th:id="@{|divMotsDecoupes${iter.count}|}" style="display:none;">
+        <div th:each="motDecoupe, iteration : ${motsDecoupe}">
+            <span th:text="${motDecoupe.key}"></span>
+            <span th:text="${motDecoupe.value}"></span>
+        </div>
+    </div>
+
+    <!--<table>-->
+        <!--<tbody>-->
+            <!--<tr th:each="pair, iter : ${mots}">-->
+                <!--<td>-->
+                    <!--<span th:text="${pair.key}"></span>-->
+                <!--</td>-->
+                <!--<td style="padding-left: 10px;">-->
+                    <!--<span th:text="${pair.value}"></span>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</tbody>-->
+    <!--</table>-->
 
 </div>
 
@@ -49,9 +61,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
+
+    function showMotsDecoupe(page) {
+        $('#hiddenPage').val(page);
+
+        $('.aMotsDecoupes').css('color', 'black');
+        $('#aMotsDecoupe'+page).css('color', 'blue');
+
+        $('.divMotsDecoupes').css('display', 'none');
+        $('#divMotsDecoupes'+page).css('display', 'block');
+    }
+
     function scrollTo(hash) {
         location.hash = "#" + hash;
     }
+
 </script>
 </body>
 </html>
