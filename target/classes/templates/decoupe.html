@@ -40,6 +40,10 @@
         p {
             margin-bottom: 0em;
         }
+
+        .bkgd-yellow {
+            background-color: yellow;
+        }
     </style>
 </head>
 <body>
@@ -68,19 +72,12 @@
     <br/>
     <div class="divDecoupes" th:each="decoupe, iter : ${decoupes}" th:id="@{|divDecoupe${iter.count}|}" style="display:none;">
         <p align="justify" th:each="paragraphe, iteration : ${decoupe}" th:id="@{|paragraphe${iteration.count}|}" class="paragraphe" style="width:40em;">
-            <span th:text="${#strings.isEmpty(paragraphe)}? '&nbsp;' : ${paragraphe}"></span>
+            <span class="spanTexte" th:text="${#strings.isEmpty(paragraphe)}? '&nbsp;' : ${paragraphe}"></span>
         </p>
     </div>
 
     <br/>
     <br/>
-
-    <!--<div class="divMotsDecoupes" th:each="motsDecoupe, iter : ${mots}" th:id="@{|divMotsDecoupes${iter.count}|}" style="display:none;">-->
-        <!--<div th:each="motDecoupe, iteration : ${motsDecoupe}">-->
-            <!--<span th:text="${motDecoupe.key}"></span>-->
-            <!--<span th:text="${motDecoupe.value}"></span>-->
-        <!--</div>-->
-    <!--</div>-->
 
     <button onclick="topFunction()" id="buttonToTop" title="Go to top">Top</button>
 
@@ -110,8 +107,13 @@
         $('.divDecoupes').css('display', 'none');
         $('#divDecoupe'+page).css('display', 'block');
 
-        $('.divMotsDecoupes').css('display', 'none');
-        $('#divMotsDecoupes'+page).css('display', 'block');
+        var spanTexteListe = $('#divDecoupe'+page).children('p').children('.spanTexte');
+
+        for (i = 0; i < spanTexteListe.length; i++) {
+            var spanTexte = $(spanTexteListe[i]);
+            spanTexte.html(spanTexte.html().replace(/&lt;~mark&gt;/g, "<span class='bkgd-yellow'>"));
+            spanTexte.html(spanTexte.html().replace(/&lt;\/~mark&gt;/g, "</span>"));
+        }
     }
 
     $( function() {
@@ -125,6 +127,81 @@
             var page = $("#hiddenPage").val();
             $("#commentaire").val($("#commentaire"+page).val());
           }
+        });
+
+        $( ".spanTexte" ).on( "click", function() {
+            var classSpanParent = $(window.getSelection().anchorNode.parentNode).attr('class');
+
+            if ("bkgd-yellow" != classSpanParent) {
+
+                var regex = '[ \\.,;!\\?\\(\\)\\[\\]]';
+
+                var offset = window.getSelection().anchorOffset;
+
+                var indexRight = offset+1;
+                var indexLeft = offset-1;
+
+                var ligne = $(this).text();
+
+                var char = ligne.charAt(offset);
+
+                var motRight = char;
+                var motLeft = "";
+
+                if (char.match(regex) == null) {
+                    char = ligne.charAt(indexRight);
+                    while (char.match(regex) == null) {
+                        motRight = motRight.concat(char);
+                        indexRight++;
+                        char = ligne.charAt(indexRight);
+                    }
+
+                    char = ligne.charAt(indexLeft);
+                    while (char.match(regex) == null) {
+                        motLeft = motLeft.concat(char);
+                        indexLeft--;
+                        char = ligne.charAt(indexLeft);
+                    }
+
+                    // remet la partie de mot à l'endroit
+                    motLeft = motLeft.split("").reverse().join("");
+
+                    var data = {};
+                    data["nomFichier"] = $("#hiddenNom").val();
+                    data["noDecoupe"] = $("#hiddenPage").val();
+                    data["noLigne"] = $(this).parent().attr('id').replace('paragraphe', '');
+                    data["offsetLeft"] = indexLeft;
+                    data["offsetRight"] = indexRight;
+
+                    // surligne
+                    var thisTexte = $(this).html();
+                    var thisTexte = [thisTexte.slice(0, indexRight), "</span>", thisTexte.slice(indexRight)].join('');
+                    var thisTexte = [thisTexte.slice(0, indexLeft+1), "<span class='bkgd-yellow'>", thisTexte.slice(indexLeft+1)].join('');
+                    $(this).html(thisTexte);
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json",
+                        url: "/markMot",
+                        data: JSON.stringify(data),
+                        dataType: 'json',
+                        cache: false,
+                        timeout: 600000,
+                        success: function (data) {
+                        },
+                        error: function (e) {
+                        }
+                    });
+                }
+            }
+        });
+
+        $( ".paragraphe" ).on( "dblclick", function() {
+            $( "#dialog-textarea" ).dialog( "open" );
+        });
+
+        $( "#ferme-commentaire" ).on( "click", function() {
+            $( "#dialog-textarea" ).dialog( "close" );
         });
 
         $( "#submit-commentaire" ).on( "click", function() {
@@ -148,14 +225,6 @@
             });
 
             $( "#dialog-textarea" ).dialog( "close" );
-        });
-
-        $( "#ferme-commentaire" ).on( "click", function() {
-            $( "#dialog-textarea" ).dialog( "close" );
-        });
-
-        $( ".paragraphe" ).on( "click", function() {
-            $( "#dialog-textarea" ).dialog( "open" );
         });
 
     });

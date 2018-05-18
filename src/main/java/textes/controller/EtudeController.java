@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import textes.model.Commentaire;
 import textes.model.Etude;
+import textes.model.Mark;
 import textes.service.EtudeService;
 
 import javax.servlet.http.HttpSession;
@@ -132,5 +133,16 @@ public class EtudeController {
         model.addAttribute("commentaires", commentaires);
 
         return "commentaires";
+    }
+
+
+    @PostMapping("/markMot")
+    public ResponseEntity<?> markMotViaAjax(
+            Model model,
+            @Valid @RequestBody Mark mark, Errors errors) {
+
+        etudeService.markMot(mark);
+
+        return ResponseEntity.ok("ok");
     }
 }

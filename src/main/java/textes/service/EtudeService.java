@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import textes.model.Commentaire;
 import textes.model.Etude;
+import textes.model.Mark;
 
 import javax.validation.Valid;
 import java.io.*;
@@ -386,6 +387,38 @@ public class EtudeService {
             }
 
             lignes.add(currentPosition, commentaire.getCommentaire());
+
+            Files.write(file.toPath(), lignes, StandardCharsets.UTF_8);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void markMot(Mark mark) {
+        File file = new File("src//main//resources//etudes//" + mark.getNomFichier());
+
+        try {
+            List<String> lignes = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+
+            int rankDecoupe = 1;
+            int indexLigne = 0;
+
+            List<List<String>> decoupes = getDecoupe50EtudeByNomAvecMots(mark.getNomFichier());
+
+            while (rankDecoupe < mark.getNoDecoupe()) {
+                List<String> lignesDecoupes = decoupes.get(rankDecoupe-1);
+                indexLigne += lignesDecoupes.size();
+                rankDecoupe++;
+            }
+
+            indexLigne += mark.getNoLigne()-1;
+
+            StringBuilder ligneBuilder = new StringBuilder(lignes.get(indexLigne));
+//            ligneBuilder.replace(mark.getOffset(), mark.getOffset() + mark.getMot().length(), "<~mark>" + mark.getMot() + "</~mark>");
+            ligneBuilder.insert(mark.getOffsetRight(), "</~mark>");
+            ligneBuilder.insert(mark.getOffsetLeft()+1, "<~mark>");
+            lignes.set(indexLigne, ligneBuilder.toString());
 
             Files.write(file.toPath(), lignes, StandardCharsets.UTF_8);
         }
