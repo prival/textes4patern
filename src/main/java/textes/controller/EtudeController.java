@@ -145,4 +145,15 @@ public class EtudeController {
 
         return ResponseEntity.ok("ok");
     }
+
+
+    @PostMapping("/unmarkMot")
+    public ResponseEntity<?> unmarkMotViaAjax(
+            Model model,
+            @Valid @RequestBody Mark mark, Errors errors) {
+
+        etudeService.unmarkMot(mark);
+
+        return ResponseEntity.ok("ok");
+    }
 }
