@@ -53,6 +53,13 @@ public class EtudeService {
         }
     }
 
+    public void deleteEtude(@Valid @RequestBody Etude etude) {
+
+        File file = new File("src//main//resources//etudes//"+etude.getNom());
+
+        file.delete();
+    }
+
     public List<String> getLignesEtudeByNom(String nom) {
 
         File file = new File("src//main//resources//etudes//" + nom);

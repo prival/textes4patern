@@ -225,16 +225,28 @@
                 var lengthWordMarked = window.getSelection().anchorNode.length;
 
                 // enleve surlignage
-                var oldHtml = $(selectionNode);
-                var newHtml = selectionNode.text();
-                if (selectionNode.previousSibling != null) {
-                    oldHtml.prepend(previousSibling);
+                var newText = "";
+
+                if (selectionNode.parentNode.previousSibling != null) {
+                    newText = newText.concat($(selectionNode.parentNode.previousSibling).text());
                 }
-                if (selectionNode.nextSibling != null) {
-                    oldHtml.append(nextSibling);
+
+                newText = newText.concat($(selectionNode).text());
+
+                if (selectionNode.parentNode.nextSibling != null) {
+                    newText = newText.concat($(selectionNode.parentNode.nextSibling).text());
                 }
-                oldHtml.replaceWith(newHtml);
-                <!--$(window.getSelection().anchorNode).unwrap();-->
+
+
+                if (selectionNode.parentNode.previousSibling != null) {
+                    $(selectionNode.parentNode.previousSibling).remove();
+                }
+
+                if (selectionNode.parentNode.nextSibling != null) {
+                    $(selectionNode.parentNode.nextSibling).remove();
+                }
+
+                $(selectionNode.parentNode).replaceWith(newText);
 
                 var data = {};
                 data["nomFichier"] = $("#hiddenNom").val();

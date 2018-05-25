@@ -24,37 +24,31 @@
 
     <table>
         <tbody>
-            <tr th:each="etude : ${etudes}" th:name="${etude.nom}">
+            <tr th:each="etude : ${etudesEnCours}" th:name="${etude.libelle}">
                 <td>
-                    <a th:id="|id_${etude.nom}|" th:href="@{|/etude/${etude.nom}|}">
-                        <span th:text="${etude.nom}"></span>
+                    <a th:id="|id_${etude.libelle}|" th:href="@{|/etude/${etude.libelle}|}">
+                        <span th:text="${etude.libelle}"></span>
                     </a>
                 </td>
                 <td style="padding-left:10px;">
-                    <a th:id="|mots_id_${etude.nom}|" th:href="@{|/mots/${etude.nom}|}">
+                    <a th:id="|mots_id_${etude.libelle}|" th:href="@{|/mots/${etude.libelle}|}">
                         <span th:text="mots" style="color:red;"></span>
                     </a>
                 </td>
                 <td style="padding-left:10px;">
-                    <a th:id="|decoupe_id_${etude.nom}|" th:href="@{|/decoupe/${etude.nom}|}">
+                    <a th:id="|decoupe_id_${etude.libelle}|" th:href="@{|/decoupe/${etude.libelle}|}">
                         <span th:text="decoupe" style="color:red;"></span>
                     </a>
                 </td>
                 <td style="padding-left:10px;">
-                    <a th:id="|commentaires_id_${etude.nom}|" th:href="@{|/commentaires/${etude.nom}|}">
+                    <a th:id="|commentaires_id_${etude.libelle}|" th:href="@{|/commentaires/${etude.libelle}|}">
                         <span th:text="commentaires" style="color:red;"></span>
                     </a>
                 </td>
                 <td style="padding-left:10px;">
-                    <form th:action="@{/addEtudeEnCours}" method="post">
-                        <input type="hidden" th:name="nomEtude" th:value="${etude.nom}" />
-                        <input type="submit" class="btn btn-success" value="Ajouter aux études en cours" />
-                    </form>
-                </td>
-                <td style="padding-left:10px;">
-                    <form th:action="@{/deleteEtude}" onsubmit="return confirm('Confirmer la suppression ?');" method="post">
-                        <input type="hidden" th:name="nomEtude" th:value="${etude.nom}" />
-                        <input type="submit" class="btn btn-danger" value="Supprimer" />
+                    <form th:action="@{/deleteEtudeEnCours}" onsubmit="return confirm('Retirer l'étude ?');" method="post">
+                        <input th:name="idEtudeEnCours" type="hidden" th:value="${etude.id}" />
+                        <input type="submit" class="btn btn-danger" value="Enlever" />
                     </form>
                 </td>
             </tr>
@@ -64,30 +58,7 @@
     <br/>
     <br/>
 
-    <h4>Nouveau texte :</h4>
-
-    <br/>
-    <br/>
-
-    <form th:action="@{/addEtude}" onsubmit="return valideEtude();" th:object="${etude}" method="post">
-
-        <div>Titre :</div>
-        <div>
-            <input type="text" id="nom" th:field="*{nom}" style="width:30em;" />
-        </div>
-
-        <br />
-
-        <div>Texte :</div>
-        <div>
-            <textarea rows = "6" cols = "100" th:field="*{texte}"></textarea>
-        </div>
-
-        <div>
-            <input id="buttonCreer" class="btn btn-success" type="submit" value="Créer" />
-        </div>
-
-    </form>
+    <a id="goEtude" class="menu-first" href="/etudes">Toutes les études</a>
 
 </div>
 

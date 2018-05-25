@@ -45,6 +45,18 @@
                         <span th:text="commentaires" style="color:red;"></span>
                     </a>
                 </td>
+                <td style="padding-left:10px;">
+                    <form th:action="@{/addEtudeEnCours}" method="post">
+                        <input type="hidden" th:name="nomEtude" th:value="${etude.nom}" />
+                        <input type="submit" class="btn btn-success" value="Ajouter aux études en cours" />
+                    </form>
+                </td>
+                <td style="padding-left:10px;">
+                    <form th:action="@{/deleteEtude}" onsubmit="return confirm('Confirmer la suppression ?');" method="post">
+                        <input type="hidden" th:name="nomEtude" th:value="${etude.nom}" />
+                        <input type="submit" class="btn btn-danger" value="Supprimer" />
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>

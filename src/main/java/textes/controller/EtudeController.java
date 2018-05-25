@@ -38,10 +38,18 @@ public class EtudeController {
 
     @RequestMapping(value = { "/addEtude" }, method = RequestMethod.POST)
     public String addEtude(
-            HttpSession session,
             @ModelAttribute("etude") Etude etude) {
 
         etudeService.createEtude(etude);
+
+        return "redirect:/index";
+    }
+
+    @RequestMapping(value = { "/deleteEtude" }, method = RequestMethod.POST)
+    public String deleteEtude(
+            @ModelAttribute("etude") Etude etude) {
+
+        etudeService.deleteEtude(etude);
 
         return "redirect:/index";
     }
