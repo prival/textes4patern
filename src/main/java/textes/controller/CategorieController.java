@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import textes.model.Categorie;
+import textes.model.Texte;
 import textes.service.CategorieService;
 
 import javax.servlet.http.HttpSession;
@@ -24,11 +25,11 @@ public class CategorieController {
 
 
 
-    @GetMapping("categorie/{id}")
-    public String categorieId(@PathVariable long id, Model model) {
-        Categorie categorie = categorieService.getCategorieById(id);
+    @GetMapping("categorie/{libelle}")
+    public String categorieId(@PathVariable String libelle, Model model) {
+        Texte texte = categorieService.getNotesLanguesByLibelle(libelle);
 
-        model.addAttribute("categorie", categorie);
+        model.addAttribute("texte", texte);
 
         return "categorie";
     }

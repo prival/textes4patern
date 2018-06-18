@@ -27,9 +27,9 @@ public class TexteController {
     CategorieService categorieService;
 
 
-    @GetMapping("/texte/{id}")
-    public String showTexte(@PathVariable long id, Model model) {
-        Texte texte = texteService.getTexteById(id);
+    @GetMapping("/texte/{nomCategorie}/{nomTexte}")
+    public String showTexte(@PathVariable String nomCategorie, @PathVariable String nomTexte, Model model) {
+        Texte texte = texteService.getTexteByLibelle(nomCategorie, nomTexte);
         List<Categorie> categories = categorieService.getAllCategories();
 
         model.addAttribute("texte", texte);
@@ -81,7 +81,7 @@ public class TexteController {
 
         // TODO : faire par texte pour si besoin enlever le texte de la session
 
-        texteService.deleteTexte(id);
+//        texteService.deleteTexte(id);
 
         return "redirect:/admin";
     }
@@ -92,8 +92,8 @@ public class TexteController {
             @Valid @RequestBody List<Texte> textes,
             HttpSession session
     ) {
-        texteService.updateTexte(textes.get(0).getOrdre(), textes.get(0).getId());
-        texteService.updateTexte(textes.get(1).getOrdre(), textes.get(1).getId());
+//        texteService.updateTexte(textes.get(0).getOrdre(), textes.get(0).getId());
+//        texteService.updateTexte(textes.get(1).getOrdre(), textes.get(1).getId());
 //        categorieService.createCategorie(id);
 
         session.setAttribute("categoriesMenu", categorieService.getAllCategories());

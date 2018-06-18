@@ -15,13 +15,9 @@ public class Texte {
     @Column(name = "libelle")
     private String libelle;
 
-    @Column(name = "first_text")
+    @Column(name = "texte")
     @Type(type="text")
-    private String firstText;
-
-    @Column(name = "second_text")
-    @Type(type="text")
-    private String secondText;
+    private String texte;
 
     @Column(name = "ordre")
     private int ordre;
@@ -48,18 +44,12 @@ public class Texte {
         this.libelle = libelle;
     }
 
-    public String getFirstText() {
-        return firstText;
+    public String getTexte() {
+        return texte;
     }
 
-    public void setFirstText(String firstText) {
-        this.firstText = firstText;
-    }
-
-    public String getSecondText() { return secondText; }
-
-    public void setSecondText(String secondText) {
-        this.secondText = secondText;
+    public void setTexte(String texte) {
+        this.texte = texte;
     }
 
     public int getOrdre() {

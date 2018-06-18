@@ -10,8 +10,10 @@ import textes.repository.TexteRepository;
 
 import javax.validation.Valid;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @Service
@@ -29,6 +31,34 @@ public class TexteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Texte", "id", id));
     }
 
+    public Texte getTexteByLibelle(String nomCategorie, String nomTexte) {
+
+        Texte texte = new Texte();
+
+        try {
+            File file = new File("src//main//resources//langues//" + nomCategorie + "//" + nomTexte);
+
+            List<String> lignes = Files.readAllLines(file.toPath());
+
+            StringBuffer contenuTexte = new StringBuffer();
+
+            for (String ligne : lignes) {
+//                if (!"".equals(ligne)) {
+                contenuTexte.append(ligne);
+                contenuTexte.append("\n");
+//                }
+            }
+
+            texte.setTexte(contenuTexte.toString());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            return texte;
+        }
+    }
+
     public void createTexte(@Valid @RequestBody Texte texte) {
 
         try {
@@ -36,13 +66,7 @@ public class TexteService {
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(categoriePath + texte.getLibelle()));
 
-            bw.write(texte.getFirstText());
-
-            bw.close();
-
-            bw = new BufferedWriter(new FileWriter(categoriePath + texte.getLibelle() + "~"));
-
-            bw.write(texte.getSecondText());
+            bw.write(texte.getTexte());
 
             bw.close();
         }
@@ -51,10 +75,10 @@ public class TexteService {
         }
     }
 
-    public void updateTexte(int ordre, long id) { texteRepository.updateTexte(ordre, id);}
+//    public void updateTexte(int ordre, long id) { texteRepository.updateTexte(ordre, id);}
 
-    public void deleteTexte(@Valid @RequestBody long id) {
-        texteRepository.deleteById(id);
-    }
+//    public void deleteTexte(@Valid @RequestBody long id) {
+//        texteRepository.deleteById(id);
+//    }
 
 }

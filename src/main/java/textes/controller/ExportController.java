@@ -46,7 +46,7 @@ public class ExportController {
         for (Texte texte : textes) {
             String requete = "insert into texte(id, libelle, ordre, ingredients, etapes, id_categorie) values ("
                     + texte.getId() + ", '" + texte.getLibelle().replace("'", "''") + "', " + texte.getOrdre() + ", '"
-                    + texte.getFirstText().replace("'", "''").replace("\r\n", "<br>") + "', '" + texte.getSecondText().replace("'", "''").replace("\r\n", "<br>") + "', " + texte.getCategorie().getId() + ");";
+                    + texte.getTexte().replace("'", "''").replace("\r\n", "<br>") + "', " + texte.getCategorie().getId() + ");";
 
             stringBuffer.append(requete + "<br>");
         }

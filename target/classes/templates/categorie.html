@@ -17,21 +17,14 @@
 <!-- page -->
 <div class="main">
 
-    <div id="textes">
-        <table>
-            <tbody id="sortable">
-            <tr th:each="texte, stat : ${categorie.textes}" th:id="|tr_id_${texte.libelle}|">
-                <input type="hidden" class="classId" th:value="${texte.id}" />
-                <input type="hidden" class="classLibelle" th:value="${texte.libelle}" />
-                <input type="hidden" class="classOrdre" th:value="${texte.ordre}" />
-                <td>
-                    <a name="editer" th:id="|id_${texte.libelle}|" th:href="@{|/texte/edit/${texte.id}|}">
-                        <span th:text="${texte.libelle}"></span>
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- texte -->
+    <div th:object="${texte}">
+
+    <br />
+    <div>
+        <textarea rows = "20" cols = "140" th:field="*{texte}" style="font-size:0.9em;"></textarea>
+    </div>
+
     </div>
 
 </div>
